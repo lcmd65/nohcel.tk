@@ -1,16 +1,32 @@
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import *
 from functools import partial
 import app.view.var
+from app.view.view import homeView
+from app.template.home import Home
+import app.environment
+
 class LoginUI(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.parent = parent
         self.initUI()
     
-    def eventLoginClick(self):
-        
-        return
+    def eventLoginClick(self, account, password):
+        try:
+            if account.get() == "dat.lemindast" and password.get() == "1":
+                app.environment.root_main.destroy()
+                app.environment.root_main = Tk()
+                app.environment.root_main.geometry("1000x1000+100+100")
+                homeView()
+                application = Home(app.environment.root_main)
+                app.environment.root_main.mainloop()
+            else:
+                messagebox.showinfo(title= "Login", message = "Wrong Username or password")
+        except Exception as e:
+            messagebox.showerror(title= "Error", message = e)
+
     
     def initUI(self):
         self.parent.title("NOHCEL")
