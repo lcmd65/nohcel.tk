@@ -18,6 +18,7 @@ class Home(Frame):
         self.parent = parent
         self.initUI()
     
+<<<<<<< HEAD
     def eventClickHome(self):
         """ event click to add audio """
         return
@@ -28,10 +29,22 @@ class Home(Frame):
         
     def eventButtonClickEdit(self):
         """ event click edit env """
+=======
+    def eventClickPushData(self):
+        """ click to exit to login"""
+        return
+    
+    def eventClickExit(self):
+        """ click to Exit """
+        return
+        
+    def eventButtonClickEdit(self):
+        """click to Edit software environment"""
+>>>>>>> 1bf29bf7906d180790d6252d0ef51c3dd4425b1e
         return
     
     def eventClickHelp(self):
-        
+        """ click to send hekp"""
         return
         
     def eventProcessingLabel(self):
@@ -113,6 +126,6 @@ class Home(Frame):
             elif index == 0:
                 self.body_controls[index] = Frame(self.tab_controls[index])
                 self.body_controls[index].pack(fill= X, padx=5 ,pady=5)
-                self.button_controls[index] = Button(self.body_controls[index], text="Analyze", width=10, command = sequence(self.eventClickHome))
+                self.button_controls[index] = Button(self.body_controls[index], text="Analyze", width=10, command = sequence(self.eventClickPushData))
                 self.button_controls[index].pack(side=LEFT, padx=5, pady=5)
 
