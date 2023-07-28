@@ -9,6 +9,7 @@ from tkinter import (
 from app.func.func import sequence
 from app.template.help import Help
 from functools import partial
+import pyaudio
 
 
 ## UI of Laser python CE P3
@@ -31,15 +32,20 @@ class Home(Frame):
         return
     
     def eventClickHelp(self):
-        """ click to send hekp"""
-        return
+        try:
+            app.environment.root_temp = Toplevel()
+            app.environment.root_temp.geometry("400x600+100+100")
+            app_temp = Help(app.environment.root_temp)
+            app.environment.root_temp.mainloop()   
+        except Exception as e:
+            messagebox.showerror(title= "Error", message = e)
         
     def eventProcessingLabel(self):
         """ main function of this tool """
         return
         
     def eventStartFunction(self):
-        
+
         return
         
     def eventEndFunction(self):

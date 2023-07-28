@@ -1,14 +1,18 @@
+import nltk 
+import fuzz
 
-class Conversation():
+class Statement():
     def __init__(self, text):
-        self._text = []
-        self.add(text)
+        self._text = text
+        self._token = None
     
-    def add(self, text):
-        self._text.append(text)
+    def processingTest(self):
+        self._token = nltk.tokenize(self.text)
+        for index in range(self._token):
+            
+        
+        
     
-    def get(self, index):
-        return self._text[index]
 
 
         
