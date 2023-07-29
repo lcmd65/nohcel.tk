@@ -15,4 +15,4 @@ def helpView():
     app.vew.var.background_view_toplevel = ImageTk.PhotoImage(Image.open('app/images/background_login.png').resize((1092, 1080)))
     
 def loginEditView():
-    
+    return

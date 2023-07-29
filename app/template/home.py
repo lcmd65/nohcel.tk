@@ -9,7 +9,7 @@ from tkinter import (
 from app.func.func import sequence
 from app.template.help import Help
 from functools import partial
-import pyaudio
+
 
 
 ## UI of Laser python CE P3
@@ -19,18 +19,6 @@ class Home(Frame):
         self.parent = parent
         self.initUI()
     
-<<<<<<< HEAD
-    def eventClickHome(self):
-        """ event click to add audio """
-        return
-    
-    def eventClickExit(self):
-        """ event click exit to login"""
-        return
-        
-    def eventButtonClickEdit(self):
-        """ event click edit env """
-=======
     def eventClickPushData(self):
         """ click to exit to login"""
         return
@@ -41,7 +29,6 @@ class Home(Frame):
         
     def eventButtonClickEdit(self):
         """click to Edit software environment"""
->>>>>>> 1bf29bf7906d180790d6252d0ef51c3dd4425b1e
         return
     
     def eventClickHelp(self):
@@ -59,19 +46,13 @@ class Home(Frame):
         return
         
     def eventStartFunction(self):
-<<<<<<< HEAD
-
-=======
-        """ event start """
         
->>>>>>> refs/remotes/origin/main
         return
         
     def eventEndFunction(self):
-        """ event end """
         
         return
-    
+        
     def initUI(self):
         self.parent.title("VinBigdata Speech to Text")
         self.pack(fill=BOTH, expand=True)
@@ -83,7 +64,7 @@ class Home(Frame):
         self.button_bar = Frame(self.label_root, bg= None)
         self.button_bar.pack(side = TOP, fill = X)
         self.button_bars = [ None for _ in range(5)]
-        for index, label_text, commands in zip(range(1, 5), ["Exit", "File", "Edit", "Help"], [self.eventClickExit, None, self.eventButtonClickEdit, self.eventClickHelp]):
+        for index, label_text, commands in zip(range(1, 4), ["Exit", "File", "Edit", "Help"], [self.eventClickExit, None, self.eventButtonClickEdit, self.eventClickHelp]):
             self.button_bars[index] = Button(self.button_bar, text = label_text, width= 10, command= commands, bg= None, image=None)
             self.button_bars[index].config(bg= None, bd=0)
             self.button_bars[index].pack(side = LEFT, fill = BOTH)
@@ -123,6 +104,7 @@ class Home(Frame):
                 self.text_controls[index].pack(fill=BOTH, pady=0, padx=5, expand=True)
                 
                 # get type of machine data connect: A, B, C
+                temp = self.tranferString(index)
                 commands = [
                     partial(self.eventProcessingLabel),
                     partial(self.eventStartFunction),

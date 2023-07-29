@@ -9,6 +9,10 @@ class Statement():
     def processingTest(self):
         self._token = nltk.tokenize(self.text)
         for index in range(self._token):
+            pass
+        """ task here ??"""
+        
+        return
             
         
         
