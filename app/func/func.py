@@ -5,8 +5,7 @@ from tkinter import messagebox
 from app.model.conversation import Statement
 from gtts import gTTS
 import playsound
-
-
+import time
 
 def sequence(*functions):
     def func(*args, **kwargs):
@@ -27,12 +26,21 @@ def audioMicroToText():
             return text
         except Exception as e:
             messagebox.showerror(title = "Error", message = e)
+
+def audioToText(audio):
+    """ task here """
+    text = None
+    return text
             
 def textToAudio(text):
     """ processing text to audio by google api """
     try:
         output = gTTS(text,lang="vi", slow = False)
-        output.save("output.mp3")
-        playsound.playsound('output.mp3', True)
+        output.save("".join(["output/", str(time.time),".mp3"]))
+        # playsound.playsound("".join(["output/", str(time.time),".mp3"]), True)
     except Exception as e:
         messagebox.showerror(title = "Error", message = e)
+
+def showAudio():
+    
+    return
