@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
 from functools import partial
+from app.view.view import loginEditView
+from app.view.view import homeView
 import app.view.var
 import app.environment
 
@@ -13,7 +15,6 @@ class LoginUI(Frame):
     
     def eventLoginClick(self, account, password):
         try:
-            from app.view.view import homeView
             if account.get() == "dat.lemindast" and password.get() == "1":
                 app.environment.root_main.destroy()
                 homeView()
@@ -23,11 +24,7 @@ class LoginUI(Frame):
             messagebox.showerror(title= "Error", message = e)
 
     def eventLoginEditClick(self):
-        try:
-            from app.view.view import loginEditView
-            loginEditView()
-        except Exception as e:
-            messagebox.showerror(title= "Error", message = e)
+        loginEditView()
     
     def initUI(self):
         self.parent.title("NOHCEL")
