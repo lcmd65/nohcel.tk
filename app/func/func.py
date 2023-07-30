@@ -2,7 +2,6 @@ from functools import partial
 import speech_recognition as sr
 import pyaudio
 from tkinter import messagebox
-from app.model.conversation import Statement
 from gtts import gTTS
 import playsound
 import time
@@ -21,7 +20,7 @@ def audioMicroToText():
     with sr.Microphone() as source:
         audio = r.listen(source)
         try:
-            text = Statement(r.recognize_google(audio,language="vi-VI"))
+            text = r.recognize_google(audio,language="vi-VI")
             text = text.processingTest()
             return text
         except Exception as e:

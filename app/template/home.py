@@ -7,9 +7,7 @@ from tkinter import (
     ttk,
     messagebox)
 from app.func.func import sequence
-from app.template.help import Help
 from functools import partial
-
 
 
 ## UI of Laser python CE P3
@@ -25,18 +23,26 @@ class Home(Frame):
     
     def eventClickExit(self):
         """ click to Exit """
-        return
+        try:
+            from app.view.view import loginView
+            app.environment.root_main.destroy()
+            loginView()
+        except Exception as e:
+            messagebox.showerror(title= "Error", message = e)
         
     def eventButtonClickEdit(self):
         """click to Edit software environment"""
+        try:
+            from app.view.view import editView
+            editView()
+        except Exception as e:
+            messagebox.showerror(title= "Error", message = e)
         return
     
     def eventClickHelp(self):
         try:
-            app.environment.root_temp = Toplevel()
-            app.environment.root_temp.geometry("400x600+100+100")
-            app_temp = Help(app.environment.root_temp)
-            app.environment.root_temp.mainloop()   
+            from app.view.view import helpView
+            helpView()
         except Exception as e:
             messagebox.showerror(title= "Error", message = e)
         
@@ -54,7 +60,7 @@ class Home(Frame):
         return
         
     def initUI(self):
-        self.parent.title("VinBigdata Speech to Text")
+        self.parent.title("VinBigdata LLM")
         self.pack(fill=BOTH, expand=True)
         
         self.label_root = Label(self, i= app.view.var.background_view, bg = None)
@@ -64,7 +70,7 @@ class Home(Frame):
         self.button_bar = Frame(self.label_root, bg= None)
         self.button_bar.pack(side = TOP, fill = X)
         self.button_bars = [ None for _ in range(5)]
-        for index, label_text, commands in zip(range(1, 4), ["Exit", "File", "Edit", "Help"], [self.eventClickExit, None, self.eventButtonClickEdit, self.eventClickHelp]):
+        for index, label_text, commands in zip(range(1, 5), ["Exit", "File", "Edit", "Help"], [self.eventClickExit, None, self.eventButtonClickEdit, self.eventClickHelp]):
             self.button_bars[index] = Button(self.button_bar, text = label_text, width= 10, command= commands, bg= None, image=None)
             self.button_bars[index].config(bg= None, bd=0)
             self.button_bars[index].pack(side = LEFT, fill = BOTH)
@@ -76,19 +82,19 @@ class Home(Frame):
         self.notebook_control.pack(expand= True, fill=BOTH, padx=5, pady= 20)
         
         # init tab control 
-        self.tab_controls = [None for _ in range(4)]
-        self.body_controls = [None for _ in range(4)]
-        self.button_controls = [None for _ in range(4)]
-        self.text_controls = [None for _ in range(4)]
-        self.sheet_controls = [None for _ in range(4)]
+        self.tab_controls = [None for _ in range(2)]
+        self.body_controls = [None for _ in range(2)]
+        self.button_controls = [None for _ in range(2)]
+        self.text_controls = [None for _ in range(2)]
+        self.sheet_controls = [None for _ in range(2)]
         
-        for index, label_text in zip(range(2), ['    HOME    ', '      Speech to Text      ']):
+        for index, label_text in zip(range(2), ['         HOME         ', '      Speech to Text      ']):
             self.tab_controls[index] = Frame(self.notebook_control)
             self.tab_controls[index].pack(side= LEFT, padx=0, pady=5)
             self.notebook_control.add(self.tab_controls[index], text = label_text)
             if index != 0: # except home tab
                 self.body_controls[index] = [None for _ in range(3)]
-                self.button_controls[index] =[None for _ in range(4)]
+                self.button_controls[index] =[None for _ in range(3)]
                 for se_index in range(3):
                     self.body_controls[index][se_index] = Frame(self.tab_controls[index])
                     self.body_controls[index][se_index].pack(fill =X)
@@ -104,7 +110,6 @@ class Home(Frame):
                 self.text_controls[index].pack(fill=BOTH, pady=0, padx=5, expand=True)
                 
                 # get type of machine data connect: A, B, C
-                temp = self.tranferString(index)
                 commands = [
                     partial(self.eventProcessingLabel),
                     partial(self.eventStartFunction),

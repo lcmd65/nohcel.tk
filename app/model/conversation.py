@@ -10,7 +10,7 @@ class Statement():
         self._annotations = []
         self._roll = None
         
-    def tranferNumber(prefix, suffix):
+    def tranferNumber(self, prefix, suffix):
         return prefix * suffix
     
     def processingAnnotation(self):

@@ -3,9 +3,6 @@ from tkinter import messagebox
 from tkinter.ttk import *
 from functools import partial
 import app.view.var
-from app.view.view import homeView
-from app.template.home import Home
-from app.template.login_edit import LoginEdit
 import app.environment
 
 class LoginUI(Frame):
@@ -16,13 +13,10 @@ class LoginUI(Frame):
     
     def eventLoginClick(self, account, password):
         try:
+            from app.view.view import homeView
             if account.get() == "dat.lemindast" and password.get() == "1":
                 app.environment.root_main.destroy()
-                app.environment.root_main = Tk()
-                app.environment.root_main.geometry("1000x1000+100+100")
                 homeView()
-                application = Home(app.environment.root_main)
-                app.environment.root_main.mainloop()
             else:
                 messagebox.showinfo(title= "Login", message = "Wrong Username or password")
         except Exception as e:
@@ -30,10 +24,8 @@ class LoginUI(Frame):
 
     def eventLoginEditClick(self):
         try:
-            app.environment.root_temp = Toplevel()
-            app.environment.root_temp.geometry("1000x1000+100+100")
-            application_edit = LoginEdit(app.environment.root_temp)
-            app.environment.root_temp.mainloop()
+            from app.view.view import loginEditView
+            loginEditView()
         except Exception as e:
             messagebox.showerror(title= "Error", message = e)
     
@@ -44,7 +36,7 @@ class LoginUI(Frame):
         self.label_privacy = Label(self.parent, text = "lcmd privacy 2023")
         self.label_privacy.pack(fill = BOTH, side = BOTTOM)
 
-        self.bg = Label(self, i= app.view.var.background_view)
+        self.bg = Label(self, i= app.view.var.background_view, bg= None)
         self.bg.pack(fill = BOTH, side = BOTTOM)
         
         self.notebook = Notebook(self.bg, width= 60, height= 80)
