@@ -17,9 +17,9 @@ class Home(Frame):
         self.parent = parent
         self.initUI()
     
-    def eventClickPushData(self):
+    def eventClickPushData(self, tree):
         """ click to exit to login"""
-        return
+        tree['selectmode'] = "browse"
     
     def eventClickExit(self):
         """ click to Exit """
@@ -61,15 +61,18 @@ class Home(Frame):
         
     def initUI(self):
         self.parent.title("VinBigdata LLM")
-        self.pack(fill=BOTH, expand = True, side = TOP)
+        self.pack(fill=BOTH, expand = True, side = BOTTOM)
         
-        self.label_privacy = Label(self.parent, text = "VinBigdata Privacy @2023")
-        self.label_privacy.pack(fill = BOTH, side = BOTTOM)
+        self.label_root = Label(self.parent, i= app.view.var.background_view, bg = None)
+        self.label_root.pack(fill = BOTH, side = TOP)
+        
+        self.label_privacy = Label(self, text = "VinBigdata Privacy @2023")
+        self.label_privacy.pack(fill = X, side = LEFT, padx = 10)
+        
+        self.logo_menu = Label(self, i = app.view.var.logo_view)
+        self.logo_menu.pack(side = RIGHT, padx = 10)  
         
         self.home_menu = Menu(self.parent)
-        
-        self.label_root = Label(self, i= app.view.var.background_view, bg = None)
-        self.label_root.pack(fill = BOTH)
 
         """file menu"""
         file_menu = Menu(self.home_menu)
@@ -89,12 +92,9 @@ class Home(Frame):
         for index, label_text, commands in zip(range(1, 4), ["File", "Edit", "Help"], [file_menu, edit_menu, help_menu]):
             self.home_menu.add_cascade(label= label_text, menu = commands)
         
-        self.logo_menu = Label(self, i = app.view.var.logo_view)
-        self.logo_menu.pack(side = RIGHT)  
-        
         # Notebook include tab home, laser P3A to C
         self.notebook_control = ttk.Notebook(self.label_root)
-        self.notebook_control.pack(expand= True, fill=BOTH, padx=5, pady= 0)
+        self.notebook_control.pack(expand= True, fill=BOTH, padx=10, pady= 0)
         noteStyle = ttk.Style()
         noteStyle.configure('TNotebook', tabposition='wn')
         noteStyle.theme_use('default')
@@ -150,14 +150,14 @@ class Home(Frame):
                 self.body_controls[index][0] = Frame(self.tab_controls[index])
                 self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0, side = LEFT)
                 self.body_controls[index][1] = Frame(self.tab_controls[index])
-                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0)
+                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 5)
                 
-                self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1, 2, 3),  show='headings', height= 5)
-                self.tree.pack()
+                self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1),  show='headings', height = 40)
+                self.tree.pack(fill = Y)
                 
-                self.tree.heading(1, text='roll number')
+                self.tree.heading(1, text='AUDIO')
                 self.tree.insert(parent='', index=0, iid=0, values=("audio_name.mp3"))
                 
-                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventClickPushData))
+                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventClickPushData, self.tree))
                 self.button_controls[index].pack(side=BOTTOM, padx = 0, pady = 0, fill = X)
 
