@@ -2,9 +2,8 @@ import app.view.var
 import app.environment
 import tksheet 
 from tkinter import *
-from tkinter.ttk import Style
+from tkinter.ttk import Style, Button
 from tkinter import (
-    Button,
     ttk,
     messagebox)
 from app.func.func import sequence
@@ -70,7 +69,7 @@ class Home(Frame):
         self.home_menu = Menu(self.parent)
         
         self.label_root = Label(self, i= app.view.var.background_view, bg = None)
-        self.label_root.pack()
+        self.label_root.pack(fill = BOTH)
 
         """file menu"""
         file_menu = Menu(self.home_menu)
@@ -104,6 +103,9 @@ class Home(Frame):
         noteStyle.map("TNotebook", background= [("selected", "#ececec")] )
         noteStyle.map("TNotebook.Tab", foreground = [("selected", "black")])
         
+        buttonStyle = Style()
+        buttonStyle.configure('W.TButton', background = "#ececec", foreground = 'black')
+        
         # init tab control 
         self.tab_controls = [None for _ in range(2)]
         self.body_controls = [None for _ in range(2)]
@@ -111,7 +113,7 @@ class Home(Frame):
         self.text_controls = [None for _ in range(2)]
         self.sheet_controls = [None for _ in range(2)]
         
-        for index, label_text in zip(range(2), ['           HOME           ', '      Speech to Text      ']):
+        for index, label_text in zip(range(2), ['           NOHCEL BOT           ', '      Speech to Text      ']):
             self.tab_controls[index] = Frame(self.notebook_control, bg=None)
             self.tab_controls[index].pack(side= LEFT, padx=0, pady=5)
             self.notebook_control.add(self.tab_controls[index], text = label_text)
@@ -139,13 +141,23 @@ class Home(Frame):
                     partial(self.eventEndFunction),
                 ]
                 for se_index, button_text, command_ in zip(range(3), ["Import Audio", "Start", "End"], commands):
-                    self.button_controls[index][se_index] = Button(self.body_controls[index][0], text= button_text, width=25, command = command_)
+                    self.button_controls[index][se_index] = Button(self.body_controls[index][0], text= button_text, width= 15, style = 'W.TButton', command = command_)
                     self.button_controls[index][se_index].pack(side=LEFT, padx=5, pady=5)
             
             # tab home define
             elif index == 0:
-                self.body_controls[index] = Frame(self.tab_controls[index])
-                self.body_controls[index].pack(fill= X, padx=5 ,pady=5)
-                self.button_controls[index] = Button(self.body_controls[index], text="Analyze", width=10, command = sequence(self.eventClickPushData))
-                self.button_controls[index].pack(side=LEFT, padx=5, pady=5)
+                self.body_controls[index] = [None for _ in range(2)]
+                self.body_controls[index][0] = Frame(self.tab_controls[index])
+                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0, side = LEFT)
+                self.body_controls[index][1] = Frame(self.tab_controls[index])
+                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0)
+                
+                self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1, 2, 3),  show='headings', height= 5)
+                self.tree.pack()
+                
+                self.tree.heading(1, text='roll number')
+                self.tree.insert(parent='', index=0, iid=0, values=("audio_name.mp3"))
+                
+                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventClickPushData))
+                self.button_controls[index].pack(side=BOTTOM, padx = 0, pady = 0, fill = X)
 

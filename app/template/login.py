@@ -73,7 +73,10 @@ class LoginUI(Frame):
         label_forgot.pack(side = TOP, fill = X)
         label_forgot.bind("<Button-1>", lambda e:partial(self.eventLoginEditClick))
         
-        button_login = Button(frame_list[4], text = "Sign In", width = 10, command = partial(self.eventLoginClick, entry_account, entry_password))
+        buttonStyle = Style()
+        buttonStyle.configure('W.TButton', background = "#ececec", foreground = 'black')
+        
+        button_login = Button(frame_list[4], text = "Sign In", width = 10, style= "W.TButton", command = partial(self.eventLoginClick, entry_account, entry_password))
         button_login.pack(side = RIGHT, fill = BOTH)
         
         
