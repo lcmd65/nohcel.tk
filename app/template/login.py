@@ -4,6 +4,7 @@ from tkinter.ttk import *
 from functools import partial
 from app.view.view import loginEditView
 from app.view.view import homeView
+from app.func.database import userAuthentication
 import app.view.var
 import app.environment
 
@@ -15,7 +16,8 @@ class LoginUI(Frame):
     
     def eventLoginClick(self, account, password):
         try:
-            if account.get() == "dat.lemindast" and password.get() == "1":
+            if account.get() == "dat.lemindast" and password.get() == "1" or\
+                userAuthentication(account.get(), password.get()) == True:
                 app.environment.root_main.destroy()
                 homeView()
             else:
@@ -30,7 +32,7 @@ class LoginUI(Frame):
         self.parent.title("NOHCEL")
         self.pack(fill = BOTH, side = TOP)
         
-        self.label_privacy = Label(self.parent, text = "lcmd privacy 2023")
+        self.label_privacy = Label(self.parent, text = "VinBigdata Privacy @2023")
         self.label_privacy.pack(fill = BOTH, side = BOTTOM)
 
         self.bg = Label(self, i= app.view.var.background_view, bg= None)
@@ -43,6 +45,8 @@ class LoginUI(Frame):
         self.frame_login.pack(fill = BOTH, side = TOP)
         
         self.notebook.add(self.frame_login, text = "     LOGIN     ")
+        noteStyle = Style()
+        noteStyle.layout("TNotebook.Tab", [])
         
         frame_list = [None for _ in range(5)]
         for index in range(5):
@@ -69,7 +73,10 @@ class LoginUI(Frame):
         label_forgot.pack(side = TOP, fill = X)
         label_forgot.bind("<Button-1>", lambda e:partial(self.eventLoginEditClick))
         
-        button_login = Button(frame_list[4], text = "Sign In", width = 10, command = partial(self.eventLoginClick, entry_account, entry_password))
+        buttonStyle = Style()
+        buttonStyle.configure('W.TButton', background = "#ececec", foreground = 'black')
+        
+        button_login = Button(frame_list[4], text = "Sign In", width = 10, style= "W.TButton", command = partial(self.eventLoginClick, entry_account, entry_password))
         button_login.pack(side = RIGHT, fill = BOTH)
         
         

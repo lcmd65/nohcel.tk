@@ -2,8 +2,8 @@ import app.view.var
 import app.environment
 import tksheet 
 from tkinter import *
+from tkinter.ttk import Style, Button
 from tkinter import (
-    Button,
     ttk,
     messagebox)
 from app.func.func import sequence
@@ -17,12 +17,16 @@ class Home(Frame):
         self.parent = parent
         self.initUI()
     
-    def eventClickPushData(self):
-        """ click to exit to login"""
-        return
+    def eventButtonClickPushData(self, tree):
+        """ 
+        Click to exit to login
+        """
+        tree['selectmode'] = "browse"
     
-    def eventClickExit(self):
-        """ click to Exit """
+    def eventButtonClickExit(self):
+        """ 
+        Click to Exit 
+        """
         try:
             from app.view.view import loginView
             app.environment.root_main.destroy()
@@ -31,7 +35,9 @@ class Home(Frame):
             messagebox.showerror(title= "Error", message = e)
         
     def eventButtonClickEdit(self):
-        """click to Edit software environment"""
+        """ 
+        Click to Edit software environment
+        """
         try:
             from app.view.view import editView
             editView()
@@ -39,47 +45,84 @@ class Home(Frame):
             messagebox.showerror(title= "Error", message = e)
         return
     
-    def eventClickHelp(self):
+    def eventButtonClickHelp(self):
         try:
             from app.view.view import helpView
             helpView()
         except Exception as e:
             messagebox.showerror(title= "Error", message = e)
         
-    def eventProcessingLabel(self):
-        """ main function of this tool """
+    def eventButtonClickProcessingLabel(self):
+        """ 
+        Main function of this tool 
+        """
         
         return
         
-    def eventStartFunction(self):
-        
+    def eventButtonClickStartFunction(self):
+        """ 
+        Click to Start labeling
+        """
         return
         
-    def eventEndFunction(self):
-        
+    def eventButtonClickEndFunction(self):
+        """
+        Click to end labeling
+        """
         return
         
     def initUI(self):
         self.parent.title("VinBigdata LLM")
-        self.pack(fill=BOTH, expand=True)
+        self.pack(fill=BOTH, expand = True, side = BOTTOM)
         
-        self.label_root = Label(self, i= app.view.var.background_view, bg = None)
-        self.label_root.pack()
+        self.label_root = Label(self.parent, i= app.view.var.background_view, bg = None)
+        self.label_root.pack(fill = BOTH, side = TOP)
         
-        # button bar (consist of Exit, Edit, Help)
-        self.button_bar = Frame(self.label_root, bg= None)
-        self.button_bar.pack(side = TOP, fill = X)
-        self.button_bars = [ None for _ in range(5)]
-        for index, label_text, commands in zip(range(1, 5), ["Exit", "File", "Edit", "Help"], [self.eventClickExit, None, self.eventButtonClickEdit, self.eventClickHelp]):
-            self.button_bars[index] = Button(self.button_bar, text = label_text, width= 10, command= commands, bg= None, image=None)
-            self.button_bars[index].config(bg= None, bd=0)
-            self.button_bars[index].pack(side = LEFT, fill = BOTH)
+        self.label_privacy = Label(self, text = "VinBigdata Privacy @2023")
+        self.label_privacy.pack(fill = X, side = LEFT, padx = 10)
         
-        self.button_bars[0] = Label(self.button_bar, i = app.view.var.logo_view)
-        self.button_bars[0].pack(side = RIGHT)  
+        self.logo_menu = Label(self, i = app.view.var.logo_view)
+        self.logo_menu.pack(side = RIGHT, padx = 10)  
+        
+        self.home_menu = Menu(self.parent)
+
+        """
+        File menu
+        """
+        file_menu = Menu(self.home_menu)
+        file_menu.add_command(label="New", command = None)
+        file_menu.add_command(label="Open", command = None)
+        file_menu.add_separator()
+        file_menu.add_command(label= "Exit", command = partial(self.eventButtonClickExit))
+        
+        """ 
+        Edit menu 
+        """
+        edit_menu = Menu(self.home_menu)
+        edit_menu.add_command(label="Edit environment", command = partial(self.eventButtonClickEdit))
+        
+        """ 
+        Help menu 
+        """
+        help_menu = Menu(self.home_menu)
+        help_menu.add_command(label = "Help", command = partial(self.eventButtonClickHelp))
+        
+        for index, label_text, commands in zip(range(1, 4), ["File", "Edit", "Help"], [file_menu, edit_menu, help_menu]):
+            self.home_menu.add_cascade(label= label_text, menu = commands)
+        
         # Notebook include tab home, laser P3A to C
         self.notebook_control = ttk.Notebook(self.label_root)
-        self.notebook_control.pack(expand= True, fill=BOTH, padx=5, pady= 20)
+        self.notebook_control.pack(expand= True, fill=BOTH, padx=10, pady= 0)
+        noteStyle = ttk.Style()
+        noteStyle.configure('TNotebook', tabposition='wn')
+        noteStyle.theme_use('default')
+        noteStyle.configure("TNotebook", background= "#001c54", borderwidth = 0)
+        noteStyle.configure("TNotebook.Tab", background = "#001c54", foreground = "#ececec", borderwidth = 0)
+        noteStyle.map("TNotebook", background= [("selected", "#ececec")] )
+        noteStyle.map("TNotebook.Tab", foreground = [("selected", "black")])
+        
+        buttonStyle = Style()
+        buttonStyle.configure('W.TButton', background = "#ececec", foreground = 'black')
         
         # init tab control 
         self.tab_controls = [None for _ in range(2)]
@@ -88,8 +131,11 @@ class Home(Frame):
         self.text_controls = [None for _ in range(2)]
         self.sheet_controls = [None for _ in range(2)]
         
-        for index, label_text in zip(range(2), ['         HOME         ', '      Speech to Text      ']):
-            self.tab_controls[index] = Frame(self.notebook_control)
+        for index, label_text in zip(range(2), ['           Audio Labeling          ', '      Speech to Text      ']):
+            """ 
+            Speech to Text tab
+            """
+            self.tab_controls[index] = Frame(self.notebook_control, bg=None)
             self.tab_controls[index].pack(side= LEFT, padx=0, pady=5)
             self.notebook_control.add(self.tab_controls[index], text = label_text)
             if index != 0: # except home tab
@@ -111,18 +157,44 @@ class Home(Frame):
                 
                 # get type of machine data connect: A, B, C
                 commands = [
-                    partial(self.eventProcessingLabel),
-                    partial(self.eventStartFunction),
-                    partial(self.eventEndFunction),
+                    partial(self.eventButtonClickProcessingLabel),
+                    partial(self.eventButtonClickStartFunction),
+                    partial(self.eventButtonClickEndFunction),
                 ]
                 for se_index, button_text, command_ in zip(range(3), ["Import Audio", "Start", "End"], commands):
-                    self.button_controls[index][se_index] = Button(self.body_controls[index][0], text= button_text, width=25, command = command_)
+                    self.button_controls[index][se_index] = Button(self.body_controls[index][0], text= button_text, width= 15, style = 'W.TButton', command = command_)
                     self.button_controls[index][se_index].pack(side=LEFT, padx=5, pady=5)
             
-            # tab home define
             elif index == 0:
-                self.body_controls[index] = Frame(self.tab_controls[index])
-                self.body_controls[index].pack(fill= X, padx=5 ,pady=5)
-                self.button_controls[index] = Button(self.body_controls[index], text="Analyze", width=10, command = sequence(self.eventClickPushData))
-                self.button_controls[index].pack(side=LEFT, padx=5, pady=5)
+                """ 
+                UI 2 monitor: tree view and processing
+                """
+                self.body_controls[index] = [None for _ in range(2)]
+                
+                """ 
+                Tree view for open and browse data
+                """
+                self.body_controls[index][0] = Frame(self.tab_controls[index])
+                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0, side = LEFT)
+                
+                """
+                View for processing data 
+                """
+                self.body_controls[index][1] = Frame(self.tab_controls[index])
+                self.body_controls[index][1].pack(fill= Y, padx = 0 ,pady = 5)
+                self.body_control_processing = [None for _ in range(3)]
+                for second_index in range(3):
+                    self.body_control_processing[second_index] = Frame(self.body_controls[index][1])
+                    self.body_control_processing[second_index].pack(fill= X, padx = 0 ,pady = 5)
+                    
+                self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1),  show='headings', height = 40)
+                self.tree.pack(fill = Y)
+                
+                self.tree.heading(1, text="Data source")
+                with open("dataset", "r+") as folder:
+                    for item, third_index in zip(folder, folder.size()):
+                        self.tree.insert(parent='', index=0, iid=third_index, values = item)
+                
+                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventButtonClickPushData, self.tree))
+                self.button_controls[index].pack(side = BOTTOM, padx = 0, pady = 0, fill = BOTH)
 
