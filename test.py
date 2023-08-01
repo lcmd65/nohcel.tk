@@ -1,5 +1,3 @@
-#copied from https://stackoverflow.com/questions/44357892/how-to-use-tkinter-and-matplotlib-to-select-points-from-a-plot-without-closing-i
-#converted to python 3
 import tkinter as tk
 import numpy as np
 import matplotlib

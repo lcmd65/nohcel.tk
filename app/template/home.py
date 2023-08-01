@@ -131,7 +131,7 @@ class Home(Frame):
         self.text_controls = [None for _ in range(2)]
         self.sheet_controls = [None for _ in range(2)]
         
-        for index, label_text in zip(range(2), ['           NOHCEL BOT           ', '      Speech to Text      ']):
+        for index, label_text in zip(range(2), ['           Audio Labeling          ', '      Speech to Text      ']):
             """ 
             Speech to Text tab
             """
@@ -164,24 +164,21 @@ class Home(Frame):
                 for se_index, button_text, command_ in zip(range(3), ["Import Audio", "Start", "End"], commands):
                     self.button_controls[index][se_index] = Button(self.body_controls[index][0], text= button_text, width= 15, style = 'W.TButton', command = command_)
                     self.button_controls[index][se_index].pack(side=LEFT, padx=5, pady=5)
-                    
-                """ 
-                Home
-                """
+            
             elif index == 0:
                 """ 
-                2 monitor: tree view and processing
+                UI 2 monitor: tree view and processing
                 """
                 self.body_controls[index] = [None for _ in range(2)]
                 
                 """ 
-                tree view for open and browse data
+                Tree view for open and browse data
                 """
                 self.body_controls[index][0] = Frame(self.tab_controls[index])
                 self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0, side = LEFT)
                 
                 """
-                view for processing data 
+                View for processing data 
                 """
                 self.body_controls[index][1] = Frame(self.tab_controls[index])
                 self.body_controls[index][1].pack(fill= Y, padx = 0 ,pady = 5)
@@ -193,8 +190,10 @@ class Home(Frame):
                 self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1),  show='headings', height = 40)
                 self.tree.pack(fill = Y)
                 
-                self.tree.heading(1, text="SOURCE")
-                self.tree.insert(parent='', index=0, iid=0, values=("audio_name.mp3"))
+                self.tree.heading(1, text="Data source")
+                with open("dataset", "r+") as folder:
+                    for item, third_index in zip(folder, folder.size()):
+                        self.tree.insert(parent='', index=0, iid=third_index, values = item)
                 
                 self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventButtonClickPushData, self.tree))
                 self.button_controls[index].pack(side = BOTTOM, padx = 0, pady = 0, fill = BOTH)
