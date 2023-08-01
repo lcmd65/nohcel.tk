@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from functools import partial
+from app.func.database import userAuthenticationNonePass
 
 class LoginEdit(Frame):
     def __init__(self, parent):
@@ -12,7 +13,9 @@ class LoginEdit(Frame):
         try:
             if newpass.get() == confirm_newpass.get():
                 try:
-                    if account.get
+                    if userAuthenticationNonePass(account.get(), email.get()) == True:
+                        pass 
+                    """ task here"""
                 except Exception as e:
                     messagebox.showerror(title = "Error", message = e)
         except Exception as e:
