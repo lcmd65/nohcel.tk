@@ -17,12 +17,16 @@ class Home(Frame):
         self.parent = parent
         self.initUI()
     
-    def eventClickPushData(self, tree):
-        """ click to exit to login"""
+    def eventButtonClickPushData(self, tree):
+        """ 
+        Click to exit to login
+        """
         tree['selectmode'] = "browse"
     
-    def eventClickExit(self):
-        """ click to Exit """
+    def eventButtonClickExit(self):
+        """ 
+        Click to Exit 
+        """
         try:
             from app.view.view import loginView
             app.environment.root_main.destroy()
@@ -31,7 +35,9 @@ class Home(Frame):
             messagebox.showerror(title= "Error", message = e)
         
     def eventButtonClickEdit(self):
-        """click to Edit software environment"""
+        """ 
+        Click to Edit software environment
+        """
         try:
             from app.view.view import editView
             editView()
@@ -39,24 +45,30 @@ class Home(Frame):
             messagebox.showerror(title= "Error", message = e)
         return
     
-    def eventClickHelp(self):
+    def eventButtonClickHelp(self):
         try:
             from app.view.view import helpView
             helpView()
         except Exception as e:
             messagebox.showerror(title= "Error", message = e)
         
-    def eventProcessingLabel(self):
-        """ main function of this tool """
+    def eventButtonClickProcessingLabel(self):
+        """ 
+        Main function of this tool 
+        """
         
         return
         
-    def eventStartFunction(self):
-        
+    def eventButtonClickStartFunction(self):
+        """ 
+        Click to Start labeling
+        """
         return
         
-    def eventEndFunction(self):
-        
+    def eventButtonClickEndFunction(self):
+        """
+        Click to end labeling
+        """
         return
         
     def initUI(self):
@@ -74,20 +86,26 @@ class Home(Frame):
         
         self.home_menu = Menu(self.parent)
 
-        """file menu"""
+        """
+        File menu
+        """
         file_menu = Menu(self.home_menu)
         file_menu.add_command(label="New", command = None)
         file_menu.add_command(label="Open", command = None)
         file_menu.add_separator()
-        file_menu.add_command(label= "Exit", command = partial(self.eventClickExit))
+        file_menu.add_command(label= "Exit", command = partial(self.eventButtonClickExit))
         
-        """ edit menu """
+        """ 
+        Edit menu 
+        """
         edit_menu = Menu(self.home_menu)
         edit_menu.add_command(label="Edit environment", command = partial(self.eventButtonClickEdit))
         
-        """ help menu """
+        """ 
+        Help menu 
+        """
         help_menu = Menu(self.home_menu)
-        help_menu.add_command(label = "Help", command = partial(self.eventClickHelp))
+        help_menu.add_command(label = "Help", command = partial(self.eventButtonClickHelp))
         
         for index, label_text, commands in zip(range(1, 4), ["File", "Edit", "Help"], [file_menu, edit_menu, help_menu]):
             self.home_menu.add_cascade(label= label_text, menu = commands)
@@ -114,6 +132,9 @@ class Home(Frame):
         self.sheet_controls = [None for _ in range(2)]
         
         for index, label_text in zip(range(2), ['           NOHCEL BOT           ', '      Speech to Text      ']):
+            """ 
+            Speech to Text tab
+            """
             self.tab_controls[index] = Frame(self.notebook_control, bg=None)
             self.tab_controls[index].pack(side= LEFT, padx=0, pady=5)
             self.notebook_control.add(self.tab_controls[index], text = label_text)
@@ -136,28 +157,45 @@ class Home(Frame):
                 
                 # get type of machine data connect: A, B, C
                 commands = [
-                    partial(self.eventProcessingLabel),
-                    partial(self.eventStartFunction),
-                    partial(self.eventEndFunction),
+                    partial(self.eventButtonClickProcessingLabel),
+                    partial(self.eventButtonClickStartFunction),
+                    partial(self.eventButtonClickEndFunction),
                 ]
                 for se_index, button_text, command_ in zip(range(3), ["Import Audio", "Start", "End"], commands):
                     self.button_controls[index][se_index] = Button(self.body_controls[index][0], text= button_text, width= 15, style = 'W.TButton', command = command_)
                     self.button_controls[index][se_index].pack(side=LEFT, padx=5, pady=5)
-            
-            # tab home define
+                    
+                """ 
+                Home
+                """
             elif index == 0:
+                """ 
+                2 monitor: tree view and processing
+                """
                 self.body_controls[index] = [None for _ in range(2)]
+                
+                """ 
+                tree view for open and browse data
+                """
                 self.body_controls[index][0] = Frame(self.tab_controls[index])
                 self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0, side = LEFT)
-                self.body_controls[index][1] = Frame(self.tab_controls[index])
-                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 5)
                 
+                """
+                view for processing data 
+                """
+                self.body_controls[index][1] = Frame(self.tab_controls[index])
+                self.body_controls[index][1].pack(fill= Y, padx = 0 ,pady = 5)
+                self.body_control_processing = [None for _ in range(3)]
+                for second_index in range(3):
+                    self.body_control_processing[second_index] = Frame(self.body_controls[index][1])
+                    self.body_control_processing[second_index].pack(fill= X, padx = 0 ,pady = 5)
+                    
                 self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1),  show='headings', height = 40)
                 self.tree.pack(fill = Y)
                 
-                self.tree.heading(1, text='AUDIO')
+                self.tree.heading(1, text="SOURCE")
                 self.tree.insert(parent='', index=0, iid=0, values=("audio_name.mp3"))
                 
-                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventClickPushData, self.tree))
-                self.button_controls[index].pack(side=BOTTOM, padx = 0, pady = 0, fill = X)
+                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventButtonClickPushData, self.tree))
+                self.button_controls[index].pack(side = BOTTOM, padx = 0, pady = 0, fill = BOTH)
 
