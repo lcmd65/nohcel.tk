@@ -10,6 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import *
 from tkinter.ttk import Style, Button
 from tkinter import (
+    filedialog,
     ttk,
     messagebox)
 from app.func.func import sequence
@@ -23,6 +24,7 @@ class Home(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
         self.nodes = dict()
+        self.datasource_path = None
         self.radio_value = IntVar()
         self.initUI()
 
@@ -52,6 +54,8 @@ class Home(Frame):
         """
         Button click in data source tree
         """
+        self.datasource_path = filedialog.askdirectory()
+        
         
     def eventButtonClickPushData(self, tree):
         """ 
@@ -295,7 +299,7 @@ class Home(Frame):
                     self.radio_list[second_index] = Radiobutton(self.body_control_processing[1], text= text_, variable = self.radio_value, value = second_index)
                     self.radio_list[second_index].pack(fill = X, side = TOP)
                 
-                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventButtonClickPushData, self.tree))
+                self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = partial(self.eventButtonClickChangeDataSource))
                 self.button_controls[index].pack(side = BOTTOM, padx = 0, pady = 0, fill = BOTH)
         
                 
