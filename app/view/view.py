@@ -19,7 +19,6 @@ def loginView():
         
 
 def homeView():
-    try:
         from app.template.home import Home
         env.root_main = Tk()
         env.root_main.geometry("1000x1000+100+100")
@@ -27,8 +26,6 @@ def homeView():
         app.view.var.logo_view = ImageTk.PhotoImage(Image.open('app/images/color_logo.png').resize((40, 25)))
         application = Home(env.root_main)
         env.root_main.mainloop()
-    except Exception as e:
-        messagebox.showerror(title = "Error", message = e)
     
 def helpView():
     try:

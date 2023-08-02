@@ -1,6 +1,12 @@
 import app.view.var
 import app.environment
-import tksheet 
+import tksheet
+import wave
+import os
+import matplotlib
+import matplotlib.pyplot as plt 
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 from tkinter import *
 from tkinter.ttk import Style, Button
 from tkinter import (
@@ -15,7 +21,30 @@ class Home(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.parent = parent
+        self.nodes = dict()
         self.initUI()
+
+    def insert_node(self, parent, text, abspath):
+        node = self.tree.insert(parent, 'end', text=text, open=True)
+        if os.path.isdir(abspath):
+            self.nodes[node] = abspath
+            self.tree.insert(node, 'end')
+
+    def open_node(self, event):
+        node = self.tree.focus()
+        abspath = self.nodes.pop(node, None)
+        if abspath:
+            self.tree.delete(self.tree.get_children(node))
+            for p in os.listdir(abspath):
+                self.insert_node(node, p, os.path.join(abspath, p))
+                
+    def processDirectory(self, parent, path):
+        for p in os.listdir(path):
+            abspath = os.path.join(path, p)
+            isdir = os.path.isdir(abspath)
+            oid = self.tree.insert(parent, 'end', text=p, open = False)
+            if isdir:
+                self.processDirectory(oid, abspath)
     
     def eventButtonClickPushData(self, tree):
         """ 
@@ -69,7 +98,43 @@ class Home(Frame):
         """
         Click to end labeling
         """
+        
         return
+        
+    def audioPlot(self, audio_path):
+        obj = wave.open(audio_path, 'rb')
+        sample_freq = obj.getframerate()
+        n_samples = obj.getnframes()
+        signal_wave = obj.readframes(-1)
+        duration = n_samples/sample_freq
+        signal_array = np.frombuffer(signal_wave, dtype=np.int16)
+        time = np.linspace(0, duration, num = n_samples)
+        fig = plt.figure(figsize=(4, 0.7))
+        plt.rc('font', size = 10)  # controls default text sizes
+        plt.rc('axes', titlesize = 10)     # fontsize of the axes title
+        plt.rc('axes', labelsize= 10)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize = 10)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize = 10)    # fontsize of the tick labels
+        plt.rc('legend', fontsize = 10)    # legend fontsize
+        plt.rc('figure', titlesize = 10) 
+        plt.rcParams["font.size"] = "10"
+        plt.title("frequency",  fontdict={'family': 'Arial', 'size': 5, 'weight': 'bold', 'color': 'black'})
+        plt.ylabel('signal wave',  fontdict={'family': 'Arial', 'size': 5, 'weight': 'bold', 'color': 'black'})
+        plt.xlabel('time (s)', fontdict={'family': 'Arial', 'size': 5, 'weight': 'bold', 'color': 'black'})
+        plt.plot(time, signal_array)
+        
+        if any(duration > t for t in time):
+            plt.xlim(0, duration)
+        return fig
+        
+    def eventProcessingAudio(self, audio, frame):
+        """
+        Processing Canvas Audio Visualize (Frequency)
+        """
+        fig = self.audioPlot(audio)
+        canvas = FigureCanvasTkAgg(fig, frame)
+        return
+        
         
     def initUI(self):
         self.parent.title("VinBigdata LLM")
@@ -85,7 +150,7 @@ class Home(Frame):
         self.logo_menu.pack(side = RIGHT, padx = 10)  
         
         self.home_menu = Menu(self.parent)
-
+        
         """
         File menu
         """
@@ -169,32 +234,48 @@ class Home(Frame):
                 """ 
                 UI 2 monitor: tree view and processing
                 """
-                self.body_controls[index] = [None for _ in range(2)]
+                self.body_controls[index] = [None for _ in range(3)]
                 
                 """ 
                 Tree view for open and browse data
                 """
                 self.body_controls[index][0] = Frame(self.tab_controls[index])
-                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 0, side = LEFT)
+                self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 5, side = LEFT)
                 
                 """
                 View for processing data 
                 """
                 self.body_controls[index][1] = Frame(self.tab_controls[index])
                 self.body_controls[index][1].pack(fill= Y, padx = 0 ,pady = 5)
+                
+                self.body_controls[index][2] = Frame(self.tab_controls[index])
+                self.body_controls[index][2].pack(fill= Y, padx = 0 ,pady = 5)
+                
                 self.body_control_processing = [None for _ in range(3)]
                 for second_index in range(3):
                     self.body_control_processing[second_index] = Frame(self.body_controls[index][1])
                     self.body_control_processing[second_index].pack(fill= X, padx = 0 ,pady = 5)
                     
-                self.tree = ttk.Treeview(self.body_controls[index][0],  columns=(1),  show='headings', height = 40)
+                self.tree = ttk.Treeview(self.body_controls[index][0], columns= 2, show='headings', height = 40)
+                ysb = ttk.Scrollbar(self.body_controls[index][0], orient='vertical', command=self.tree.yview)
+                xsb = ttk.Scrollbar(self.body_controls[index][0], orient='horizontal', command=self.tree.xview)
+                self.tree.configure(yscroll = ysb.set, xscroll = xsb.set)
+                self.tree.heading('#0', text='Data Source', anchor='w')
+                
+                abspath = os.path.abspath("/Users/lechonminhdat/Desktop/Workspace/NOHCEL-1/dataset/wav")
+                root_node = self.tree.insert('', 'end', text = abspath, open = True)
+                self.processDirectory(root_node, abspath)
+                # self.insert_node('', abspath, abspath)
+                # self.tree.bind('<<TreeviewOpen>>', self.open_node)
+                xsb.pack(fill = X, side = BOTTOM)
+                ysb.pack(fill = Y, side = RIGHT)
                 self.tree.pack(fill = Y)
                 
-                self.tree.heading(1, text="Data source")
-                with open("dataset", "r+") as folder:
-                    for item, third_index in zip(folder, folder.size()):
-                        self.tree.insert(parent='', index=0, iid=third_index, values = item)
+                canvas = FigureCanvasTkAgg(self.audioPlot('dataset/wav/FPTOpenSpeechData_Set001_V0.1_000024.wav'), master = self.body_control_processing[0])
+                #canvas.draw()
+                #canvas.get_tk_widget().pack(fill= BOTH, expand=True)
                 
                 self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventButtonClickPushData, self.tree))
                 self.button_controls[index].pack(side = BOTTOM, padx = 0, pady = 0, fill = BOTH)
+                
 
