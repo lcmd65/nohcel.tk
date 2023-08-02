@@ -14,6 +14,7 @@ from tkinter import (
     messagebox)
 from app.func.func import sequence
 from functools import partial
+from app.model.conversation import Audio
 
 
 ## UI of Laser python CE P3
@@ -22,6 +23,7 @@ class Home(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
         self.nodes = dict()
+        self.radio_value = IntVar()
         self.initUI()
 
     def insert_node(self, parent, text, abspath):
@@ -46,6 +48,11 @@ class Home(Frame):
             if isdir:
                 self.processDirectory(oid, abspath)
     
+    def eventButtonClickChangeDataSource(self):
+        """
+        Button click in data source tree
+        """
+        
     def eventButtonClickPushData(self, tree):
         """ 
         Click to exit to login
@@ -109,18 +116,18 @@ class Home(Frame):
         duration = n_samples/sample_freq
         signal_array = np.frombuffer(signal_wave, dtype=np.int16)
         time = np.linspace(0, duration, num = n_samples)
-        fig = plt.figure(figsize=(4, 0.7))
-        plt.rc('font', size = 10)  # controls default text sizes
-        plt.rc('axes', titlesize = 10)     # fontsize of the axes title
-        plt.rc('axes', labelsize= 10)    # fontsize of the x and y labels
-        plt.rc('xtick', labelsize = 10)    # fontsize of the tick labels
-        plt.rc('ytick', labelsize = 10)    # fontsize of the tick labels
-        plt.rc('legend', fontsize = 10)    # legend fontsize
-        plt.rc('figure', titlesize = 10) 
-        plt.rcParams["font.size"] = "10"
-        plt.title("frequency",  fontdict={'family': 'Arial', 'size': 5, 'weight': 'bold', 'color': 'black'})
-        plt.ylabel('signal wave',  fontdict={'family': 'Arial', 'size': 5, 'weight': 'bold', 'color': 'black'})
-        plt.xlabel('time (s)', fontdict={'family': 'Arial', 'size': 5, 'weight': 'bold', 'color': 'black'})
+        fig = plt.figure(figsize=(4, 1.5))
+        plt.rc('font', size = 2)  # controls default text sizes
+        plt.rc('axes', titlesize = 2)     # fontsize of the axes title
+        plt.rc('axes', labelsize= 2)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize = 2)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize = 2)    # fontsize of the tick labels
+        plt.rc('legend', fontsize = 2)    # legend fontsize
+        plt.rc('figure', titlesize = 2) 
+        plt.rcParams["font.size"] = "2"
+        plt.title("frequency",  fontdict={'family': 'Arial', 'size': 2, 'weight': 'bold', 'color': 'black'})
+        #plt.ylabel('signal wave',  fontdict={'family': 'Arial', 'size': 2, 'weight': 'bold', 'color': 'black'})
+        plt.xlabel('time (s)', fontdict={'family': 'Arial', 'size': 2, 'weight': 'bold', 'color': 'black'})
         plt.plot(time, signal_array)
         
         if any(duration > t for t in time):
@@ -235,35 +242,36 @@ class Home(Frame):
                 UI 2 monitor: tree view and processing
                 """
                 self.body_controls[index] = [None for _ in range(3)]
-                
                 """ 
                 Tree view for open and browse data
                 """
                 self.body_controls[index][0] = Frame(self.tab_controls[index])
                 self.body_controls[index][0].pack(fill= Y, padx = 0 ,pady = 5, side = LEFT)
-                
+                """ 
+                Tree view for open and browse segment
+                """
+                self.body_controls[index][2] = Frame(self.tab_controls[index])
+                self.body_controls[index][2].pack(fill= Y, padx = 0 ,pady = 5, side = RIGHT)
                 """
                 View for processing data 
                 """
                 self.body_controls[index][1] = Frame(self.tab_controls[index])
                 self.body_controls[index][1].pack(fill= Y, padx = 0 ,pady = 5)
                 
-                self.body_controls[index][2] = Frame(self.tab_controls[index])
-                self.body_controls[index][2].pack(fill= Y, padx = 0 ,pady = 5)
                 
                 self.body_control_processing = [None for _ in range(3)]
                 for second_index in range(3):
                     self.body_control_processing[second_index] = Frame(self.body_controls[index][1])
-                    self.body_control_processing[second_index].pack(fill= X, padx = 0 ,pady = 5)
+                    self.body_control_processing[second_index].pack(fill= BOTH, padx = 0 ,pady = 5)
                     
-                self.tree = ttk.Treeview(self.body_controls[index][0], columns= 2, show='headings', height = 40)
+                self.tree = ttk.Treeview(self.body_controls[index][0])
                 ysb = ttk.Scrollbar(self.body_controls[index][0], orient='vertical', command=self.tree.yview)
                 xsb = ttk.Scrollbar(self.body_controls[index][0], orient='horizontal', command=self.tree.xview)
-                self.tree.configure(yscroll = ysb.set, xscroll = xsb.set)
-                self.tree.heading('#0', text='Data Source', anchor='w')
+                self.tree.configure(yscroll = ysb.set, xscroll = xsb.set, height= 37)
+                self.tree.heading('#0', text='Data Source', anchor='n', command= partial(self.eventButtonClickChangeDataSource))
                 
                 abspath = os.path.abspath("/Users/lechonminhdat/Desktop/Workspace/NOHCEL-1/dataset/wav")
-                root_node = self.tree.insert('', 'end', text = abspath, open = True)
+                root_node = self.tree.insert("", 'end', text = abspath, open = True)
                 self.processDirectory(root_node, abspath)
                 # self.insert_node('', abspath, abspath)
                 # self.tree.bind('<<TreeviewOpen>>', self.open_node)
@@ -271,11 +279,24 @@ class Home(Frame):
                 ysb.pack(fill = Y, side = RIGHT)
                 self.tree.pack(fill = Y)
                 
+                self.segment_tab = ttk.Treeview(self.body_controls[index][2])
+                self.segment_tab.heading('#0', text='Segment', anchor='n')
+                self.segment_tab.pack(fill = Y, side = BOTTOM)
+                
                 canvas = FigureCanvasTkAgg(self.audioPlot('dataset/wav/FPTOpenSpeechData_Set001_V0.1_000024.wav'), master = self.body_control_processing[0])
-                #canvas.draw()
-                #canvas.get_tk_widget().pack(fill= BOTH, expand=True)
+                canvas.draw()
+                canvas.get_tk_widget().pack(fill= BOTH, expand = False)
+                
+                self.label_text = Entry(self.body_control_processing[0], text = "Nhập nhãn tại đây")
+                self.label_text.pack(fill = X, pady = 15)
+                
+                self.radio_list = [None for _ in range(3)]
+                for second_index, text_ in zip(range(3), ["Tổng đài viên", "Khách hàng", "Nhiều người nói"]):
+                    self.radio_list[second_index] = Radiobutton(self.body_control_processing[1], text= text_, variable = self.radio_value, value = second_index)
+                    self.radio_list[second_index].pack(fill = X, side = TOP)
                 
                 self.button_controls[index] = Button(self.body_controls[index][0], text="Browse",style = 'W.TButton', width= 15, command = sequence(self.eventButtonClickPushData, self.tree))
                 self.button_controls[index].pack(side = BOTTOM, padx = 0, pady = 0, fill = BOTH)
+        
                 
 
