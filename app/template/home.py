@@ -260,7 +260,7 @@ class Home(Frame):
                 View for processing data 
                 """
                 self.body_controls[index][1] = Frame(self.tab_controls[index])
-                self.body_controls[index][1].pack(fill= Y, padx = 0 ,pady = 5)
+                self.body_controls[index][1].pack(fill= BOTH, padx = 0 ,pady = 5, side = TOP)
                 
                 
                 self.body_control_processing = [None for _ in range(3)]
@@ -274,7 +274,7 @@ class Home(Frame):
                 self.tree.configure(yscroll = ysb.set, xscroll = xsb.set, height= 37)
                 self.tree.heading('#0', text='Data Source', anchor='n', command= partial(self.eventButtonClickChangeDataSource))
                 
-                abspath = os.path.abspath("/Users/lechonminhdat/Desktop/Workspace/NOHCEL-1/dataset/wav")
+                abspath = os.path.abspath("dataset/wav")
                 root_node = self.tree.insert("", 'end', text = abspath, open = True)
                 self.processDirectory(root_node, abspath)
                 # self.insert_node('', abspath, abspath)
