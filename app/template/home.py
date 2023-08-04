@@ -5,6 +5,8 @@ import wave
 import os
 import matplotlib
 import matplotlib.pyplot as plt 
+import librosa
+import librosa.display
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 from tkinter import *
@@ -129,10 +131,13 @@ class Home(Frame):
         plt.rc('legend', fontsize = 2)    # legend fontsize
         plt.rc('figure', titlesize = 2) 
         plt.rcParams["font.size"] = "2"
-        plt.title("frequency",  fontdict={'family': 'Arial', 'size': 2, 'weight': 'bold', 'color': 'black'})
-        #plt.ylabel('signal wave',  fontdict={'family': 'Arial', 'size': 2, 'weight': 'bold', 'color': 'black'})
-        plt.xlabel('time (s)', fontdict={'family': 'Arial', 'size': 2, 'weight': 'bold', 'color': 'black'})
-        plt.plot(time, signal_array)
+        plt.xlabel('Time (seconds)')
+        plt.ylabel('Amplitude')
+        plt.tight_layout()
+        plt.axvline(x= 0, color='r', linestyle='--')
+        plt.axvline(x= 30, color='r', linestyle='--')
+        plt.tick_params(direction='in')
+        plt.plot(time, signal_array, color='black')
         
         if any(duration > t for t in time):
             plt.xlim(0, duration)
@@ -189,13 +194,13 @@ class Home(Frame):
         # Notebook include tab home, laser P3A to C
         self.notebook_control = ttk.Notebook(self.label_root)
         self.notebook_control.pack(expand= True, fill=BOTH, padx=10, pady= 0)
-        noteStyle = ttk.Style()
-        noteStyle.configure('TNotebook', tabposition='wn')
-        noteStyle.theme_use('default')
-        noteStyle.configure("TNotebook", background= "#001c54", borderwidth = 0)
-        noteStyle.configure("TNotebook.Tab", background = "#001c54", foreground = "#ececec", borderwidth = 0)
-        noteStyle.map("TNotebook", background= [("selected", "#ececec")] )
-        noteStyle.map("TNotebook.Tab", foreground = [("selected", "black")])
+        self.noteStyle = ttk.Style()
+        self.noteStyle.configure('TNotebook', tabposition='wn')
+        self.noteStyle.theme_use('default')
+        self.noteStyle.configure("TNotebook", background= "#001c54", borderwidth = 0)
+        self.noteStyle.configure("TNotebook.Tab", background = "#001c54", foreground = "#ececec", borderwidth = 0)
+        self.noteStyle.map("TNotebook", background= [("selected", "#ececec")] )
+        self.noteStyle.map("TNotebook.Tab", foreground = [("selected", "black")])
         
         buttonStyle = Style()
         buttonStyle.configure('W.TButton', background = "#ececec", foreground = 'black')
@@ -286,6 +291,11 @@ class Home(Frame):
                 self.segment_tab = ttk.Treeview(self.body_controls[index][2])
                 self.segment_tab.heading('#0', text='Segment', anchor='n')
                 self.segment_tab.pack(fill = Y, side = BOTTOM)
+                
+                self.segment_param_tab = ttk.Treeview(self.body_controls[index][2])
+                self.segment_param_tab.heading('#0', text='Segment Paramater', anchor='n')
+                self.segment_param_tab.configure(height= 30)
+                self.segment_param_tab.pack(fill = Y, side = TOP)
                 
                 canvas = FigureCanvasTkAgg(self.audioPlot('dataset/wav/FPTOpenSpeechData_Set001_V0.1_000024.wav'), master = self.body_control_processing[0])
                 canvas.draw()
