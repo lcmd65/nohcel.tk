@@ -20,5 +20,21 @@ class Home(QtWidgets.QWidget):
     @QtCore.Slot()
     def magic(self):
         self.text.setText(random.schoice(self.hello))
+        
+    def eventButtonClickEdit(self):
+        pass
+    
+    def eventButtonClickHelp(self):
+        pass
+    
+    def eventButtonClickEdit(self):
+        pass
+
+    def eventButtonClickBrowse(self):
+        pass
+    
+    def eventButtonClickRecord(self):
+        pass
+        
 
     
