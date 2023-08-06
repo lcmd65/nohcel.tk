@@ -71,7 +71,7 @@ class Home(Frame):
         """
         try:
             from app.view.view import loginView
-            app.environment.root_main.destroy()
+            app.tkinter.environment.root_main.destroy()
             loginView()
         except Exception as e:
             messagebox.showerror(title= "Error", message = e)

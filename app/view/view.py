@@ -3,7 +3,8 @@ import app.images
 import sys
 from tkinter import *
 from tkinter import messagebox
-from PySide6 import QtWidgets
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QPixmap
 from PIL import ImageTk, Image
 import app.environment as env
 
@@ -69,11 +70,20 @@ qt view
 
 def homeViewQT():
     try:
-        from app.template.qt.home import Home
-        app = QtWidgets.QApplication([])
-        widget = Home()
-        widget.resize(800, 600)
-        widget.show()
+        from app.template.qt.home import HomeQT
+        app = QApplication(sys.argv)
+        home = HomeQT(env.root)
+        home.show()
+        sys.exit(app.exec())
+    except Exception as e:
+        messagebox.showerror(title = "Error", message = e)
+        
+def loginViewQT():
+    try:
+        from app.template.qt.login import LoginUIQT
+        app = QApplication(sys.argv)
+        login = LoginUIQT(env.root)
+        login.show()
         sys.exit(app.exec())
     except Exception as e:
         messagebox.showerror(title = "Error", message = e)
