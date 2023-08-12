@@ -18,7 +18,7 @@ class LoginUI(Frame):
         try:
             if account.get() == "dat.lemindast" and password.get() == "1" or\
                 userAuthentication(account.get(), password.get()) == True:
-                app.tkinter.environment.root_main.destroy()
+                app.environment.root_main.destroy()
                 homeView()
             else:
                 messagebox.showinfo(title= "Login", message = "Wrong Username or password")

@@ -71,7 +71,7 @@ class Home(Frame):
         """
         try:
             from app.view.view import loginView
-            app.tkinter.environment.root_main.destroy()
+            app.environment.root_main.destroy()
             loginView()
         except Exception as e:
             messagebox.showerror(title= "Error", message = e)
@@ -113,7 +113,7 @@ class Home(Frame):
         """
         
         return
-        
+    
     def audioPlot(self, audio_path):
         obj = wave.open(audio_path, 'rb')
         sample_freq = obj.getframerate()
@@ -279,7 +279,7 @@ class Home(Frame):
                 self.tree.configure(yscroll = ysb.set, xscroll = xsb.set, height= 37)
                 self.tree.heading('#0', text='Data Source', anchor='n', command= partial(self.eventButtonClickChangeDataSource))
                 
-                abspath = os.path.abspath("dataset/wav")
+                abspath = os.path.abspath("app/dataset/wav")
                 root_node = self.tree.insert("", 'end', text = abspath, open = True)
                 self.processDirectory(root_node, abspath)
                 # self.insert_node('', abspath, abspath)
